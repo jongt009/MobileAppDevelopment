@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CoordinatesListActivity">
+
+    <item android:id="@+id/action_bar_menu_back"
+        android:title="@string/Back"
+        android:icon="@android:drawable/arrow_up_float"
+        app:showAsAction="ifRoom" />
+
+</menu>
