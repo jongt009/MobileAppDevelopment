@@ -1,6 +1,7 @@
 package com.example.thomdejong.locationtracker;
 
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,17 +9,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CoordinatesListActivity extends AppCompatActivity {
 
-    private ArrayAdapter arrayAdapter;
-    private List<String> itemNames;
-    private List<CoordinateData> data;
+    private static ArrayAdapter arrayAdapter;
+    private static List<String> itemNames;
+    private static Map<String, CoordinateData> data = new HashMap<String, CoordinateData>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +35,25 @@ public class CoordinatesListActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        itemNames.add("asdffadsfasdf");
-        itemNames.add("2");
+        Location location = new Location("kjhgkjh");
+        location.setLatitude(10);
+        location.setLongitude(100);
+
+        addLocationData("asdffadsfasdf", location);
+        addLocationData("asdffsadfasfdadsfasdf", new Location("newdata"));
+
+
 
         arrayAdapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent("com.example.thomdejong.locationtracker.CompassActivity"));
+                Intent intent = new Intent("com.example.thomdejong.locationtracker.CompassActivity");
+                Bundle bundle = new Bundle();
+                bundle.putString("coordinatename", arrayAdapter.getItem(position).toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -62,10 +74,26 @@ public class CoordinatesListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_bar_add_location) {
+            Intent intent = new Intent("com.example.thomdejong.locationtracker.AddLocationActivity");
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static CoordinateData getLocationData(String key){
+        return data.get(key);
+    }
+
+    public static void addLocationData(String key, Location location){
+        CoordinateData newData = new CoordinateData();
+        newData.Name = key;
+        newData.Location = location;
+
+        data.put(key, newData);
+        itemNames.add(key);
+        arrayAdapter.notifyDataSetChanged();
     }
 }

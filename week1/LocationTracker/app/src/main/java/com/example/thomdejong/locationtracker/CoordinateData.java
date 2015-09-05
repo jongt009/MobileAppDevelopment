@@ -7,5 +7,5 @@ import android.location.Location;
  */
 public class CoordinateData {
     public String Name;
-    public Location location;
+    public Location Location;
 }
