@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AddLocationActivity extends AppCompatActivity {
 
@@ -40,18 +41,25 @@ public class AddLocationActivity extends AppCompatActivity {
         }
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        location = locationManager.getLastKnownLocation(provider);
-
+        Location bestLocation = new Location("none");
+        for(String providerName: locationManager.getProviders(true)){
+            Location location = locationManager.getLastKnownLocation(providerName);
+            if(location == null) continue;
+            if(bestLocation.getAccuracy() < location.getAccuracy()){
+                bestLocation = location;
+            }
+        }
+        location = bestLocation;
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CoordinatesListActivity.addLocationData(editText.getText().toString(), location);
 
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.popBackStack();
+                if(CoordinatesListActivity.addLocationData(editText.getText().toString(), location)){
+                    Toast.makeText(getApplicationContext(), "Location '"+ editText.getText().toString() + "' added", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Location '"+ editText.getText().toString() + "' already exists", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

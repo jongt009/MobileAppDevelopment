@@ -87,7 +87,10 @@ public class CoordinatesListActivity extends AppCompatActivity {
         return data.get(key);
     }
 
-    public static void addLocationData(String key, Location location){
+    public static boolean addLocationData(String key, Location location){
+        if(data.containsKey(key)){
+            return false;
+        }
         CoordinateData newData = new CoordinateData();
         newData.Name = key;
         newData.Location = location;
@@ -95,5 +98,6 @@ public class CoordinatesListActivity extends AppCompatActivity {
         data.put(key, newData);
         itemNames.add(key);
         arrayAdapter.notifyDataSetChanged();
+        return true;
     }
 }

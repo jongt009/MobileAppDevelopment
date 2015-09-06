@@ -6,7 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Criteria;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,10 +25,9 @@ import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CompassActivity extends AppCompatActivity {
+public class CompassActivity extends AppCompatActivity implements SensorEventListener {
 
     private LocationManager locationManager;
-    private String bestProvider;
     private LocationListener locationListener;
     private Location currentLocation;
     private Location targetLocation;
@@ -38,7 +40,19 @@ public class CompassActivity extends AppCompatActivity {
     private float xPivot, yPivot;
     private float speed;
 
-    Timer timer;
+    private Runnable updateVisualOnUIThread;
+
+    private Timer timer;
+
+    private SensorManager mSensorManager;
+    private Sensor accelerometer;
+    private Sensor magnetometer;
+
+    private float[] mGravity;
+    private float[] mGeomagnetic;
+
+    private float magneticRotation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,23 +62,95 @@ public class CompassActivity extends AppCompatActivity {
         textView = (TextView)findViewById(R.id.textViewDistance);
         imageView = (ImageView) findViewById(R.id.Compassneedle);
 
-        ActionBar actionBar = getSupportActionBar();
+        initializeActionBar();
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        createLocationListener();
 
         String coordinateName = getIntent().getExtras().getString("coordinatename");
         CoordinateData coordinateData = CoordinatesListActivity.getLocationData(coordinateName);
         targetLocation = coordinateData.Location;
-        Log.i("Location", targetLocation.toString());
-        int res = checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION");
-        if (res == PackageManager.PERMISSION_GRANTED) {
-            Log.i("permission", "granted");
-            startLocationListener();
-        } else {
-            Log.i("permission", "denied");
-        }
+        startLocationListener();
+
+        startVisualTimer();
+        initalizeVisualUICodeBlock();
+        updateCompassVisual();
+
+
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+    }
+
+    private void createLocationListener() {
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location != null) {
+                    currentLocation = location;
+                    targetRotation = location.bearingTo(targetLocation);
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                stopLocationListener();
+                startLocationListener();
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        currentLocation = new Location("empty");
+    }
+
+    private void initalizeVisualUICodeBlock(){
+        updateVisualOnUIThread = new Runnable() {
+            @Override
+            public void run() {
+                float finalTargetRotation = targetRotation - magneticRotation;
+
+                if(Math.abs(finalTargetRotation - currentRotation) > 180) {
+                    if(finalTargetRotation > currentRotation) {
+                        finalTargetRotation -= 360;
+                    }else{
+                        finalTargetRotation += 360;
+                    }
+                }
+
+                if(Math.abs(currentRotation) > 360){
+                    currentRotation = currentRotation % 360;
+                }
+
+                float maxRotation = Math.min(2.5f, speed * 1.11f + 0.01f);
+                float deltaRotation = clamp((finalTargetRotation - currentRotation) / 35f, -maxRotation, maxRotation);
+                speed = Math.abs(deltaRotation);
+                currentRotation += deltaRotation;
+
+                rotationMatrix.postRotate(deltaRotation, xPivot, yPivot);
+                imageView.setImageMatrix(rotationMatrix);
+
+                float distance = currentLocation.distanceTo(targetLocation);
+                String distanceString;
+
+                if(distance < 100){
+                    distanceString = String.format("%.0f",distance) + "m";
+                }else{
+                    distance /= 1000;
+                    distanceString = String.format("%.1f",distance) + "km";
+                }
+                textView.setText(distanceString);
+            }
+        };
+    }
+
+    private void startVisualTimer() {
         targetRotation = 0;
         currentRotation = 0;
         if (timer == null) {
@@ -77,8 +163,14 @@ public class CompassActivity extends AppCompatActivity {
                 // Call first after 0.5 seconds and 30x per second
             }, 500, 33);
         }
-        updateCompassVisual();
+    }
 
+    private void initializeActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
     }
 
     private void startLocationListener(){
@@ -88,40 +180,11 @@ public class CompassActivity extends AppCompatActivity {
         }
         if(locationManager == null) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            locationListener.onLocationChanged(locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER));
         }
 
-            if(locationListener == null){
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    currentLocation = location;
-                    targetRotation = location.bearingTo(targetLocation);
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                    stopLocationListener();
-                    startLocationListener();
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            };
-        }
-
-        Criteria criteria = new Criteria();
-        bestProvider = locationManager.getBestProvider(criteria, true);
-
-        locationListener.onLocationChanged(locationManager.getLastKnownLocation(bestProvider));
-
-        locationManager.requestLocationUpdates(bestProvider, 0,0.1f, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, locationListener);
     }
 
     private int dpToPx(int dp)
@@ -174,6 +237,7 @@ public class CompassActivity extends AppCompatActivity {
         scaledBitmap = null;
         result = null;
     }
+
     public void updateCompassVisual(){
         if(rotationMatrix == null) {
             runOnUiThread(new Runnable() {
@@ -184,39 +248,7 @@ public class CompassActivity extends AppCompatActivity {
             });
         }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(Math.abs(targetRotation - currentRotation) > 180) {
-                    if(targetRotation > currentRotation) {
-                        targetRotation -= 360;
-                    }else{
-                        targetRotation += 360;
-                    }
-                }
-
-                float maxRotation = Math.min(2f, speed * 1.15f + 0.01f);
-                float deltaRotation = clamp((targetRotation - currentRotation) / 35f, -maxRotation, maxRotation);
-                speed = Math.abs(deltaRotation);
-                currentRotation += deltaRotation;
-
-                rotationMatrix.postRotate(deltaRotation, xPivot, yPivot);
-                imageView.setImageMatrix(rotationMatrix);
-
-                float distance = currentLocation.distanceTo(targetLocation);
-                String distanceString;
-
-                if(distance < 100){
-                    distanceString = String.format("%.0f",distance) + "m";
-                }else{
-                    distance /= 1000;
-                    distanceString = String.format("%.1f",distance) + "km";
-                }
-                textView.setText(distanceString);
-            }
-        });
-
-
+        runOnUiThread(updateVisualOnUIThread);
     }
 
     private float clamp(float value, float min, float max){
@@ -229,12 +261,17 @@ public class CompassActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         stopLocationListener();
+        mSensorManager.unregisterListener(this);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         startLocationListener();
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+
     }
 
     private void stopLocationListener(){
@@ -282,5 +319,23 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            mGravity = event.values;
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            mGeomagnetic = event.values;
+        if (mGravity != null && mGeomagnetic != null) {
+            float R[] = new float[9];
+            float I[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                magneticRotation = (float)Math.toDegrees(orientation[0]);
+            }
+        }
+    }
 
 }
