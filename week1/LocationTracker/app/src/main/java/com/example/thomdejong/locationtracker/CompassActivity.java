@@ -49,7 +49,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private Sensor magnetometer;
 
     private float[] mGravity;
-    private float[] mGeomagnetic;
+    private float[] mGeomagnetic = new float[9];
 
     private float magneticRotation;
 
@@ -125,7 +125,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
                 }
 
                 if(Math.abs(currentRotation) > 360){
-                    currentRotation = currentRotation % 360;
+                    currentRotation = (currentRotation + 360) % 360;
                 }
 
                 float maxRotation = Math.min(2.5f, speed * 1.11f + 0.01f);
@@ -193,9 +193,8 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         return Math.round((float)dp * density);
     }
 
-    private  void initialImageMatrixSetup(int dpX, int dpY){
+    private  void initialImageMatrixSetup(int dpX, int dpY, ImageView view){
 // Get the ImageView and its bitmap
-        ImageView view = (ImageView) findViewById(R.id.Compassneedle);
         Drawable drawing = view.getDrawable();
         view.setScaleType(ImageView.ScaleType.MATRIX);
         if (drawing == null) {
@@ -242,8 +241,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         if(rotationMatrix == null) {
             runOnUiThread(new Runnable() {
                 @Override
-                public void run() {
-                    initialImageMatrixSetup(250, 250);
+                public void run() {initialImageMatrixSetup(250, 250, (ImageView) findViewById(R.id.Compassneedle));;
                 }
             });
         }
@@ -269,9 +267,8 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     protected void onResume() {
         super.onResume();
         startLocationListener();
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
-
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void stopLocationListener(){
@@ -322,10 +319,12 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             mGravity = event.values;
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+        }
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             mGeomagnetic = event.values;
+        }
         if (mGravity != null && mGeomagnetic != null) {
             float R[] = new float[9];
             float I[] = new float[9];
