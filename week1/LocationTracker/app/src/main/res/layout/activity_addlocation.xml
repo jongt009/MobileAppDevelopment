@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView2"
+            android:id="@+id/latitude_tekstview"
             android:layout_row="0"
             android:layout_column="0" />
 
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textView3"
+            android:id="@+id/longtitude_textview"
             android:layout_row="0"
             android:layout_column="2" />
 

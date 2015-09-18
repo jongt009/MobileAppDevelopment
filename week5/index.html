@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My photo's</title>
+		<meta charset="UTF-8">
+
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+		<style>
+			img.fullscreen {
+				max-height: 100%;
+				max-width: 100%
+			}
+		</style>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	</head>
+	<body>
+		<header data-role="header">
+			<h1>My photo's</h1>
+		</header>
+		<div data-role="page" id="photos">
+			<article data-role="content">
+				<ul data-role="listview" data-filter="true">
+					<li>
+						<a href="#led-tv"> <h1>Sharp brings biggest LED TV</h1> <img src="img/led_tv_tn.jpg" alt="LED TV" />
+						<p>
+							The biggest LED TV is about 90-inch and
+							has been released by Sharp
+						</p> </a>
+					</li>
+					<li>
+						<a href="#dj-competion"> <h1>DJ competition</h1> <img src="img/dj_panel_tn.jpg" alt="DJ Panel" />
+						<p>
+							DJs around the world are asking for a place on the
+							'Bottom 100 DJs list'
+						</p> </a>
+					</li>
+					<li>
+						<a href="#smart-phone"> <h1>Smartphones are improving</h1> <img src="img/smart_phone_tn.jpg" alt="Smart Phone" />
+						<p>
+							New Smartphones are getting better specs and
+							better features
+						</p> </a>
+					</li>
+				</ul>
+			</article>
+		</div><!-- Page photos -->
+
+		<div data-role="page" id="led-tv">
+			<header data-role="header">
+				<h1>Sharp brings biggest LED TV</h1>
+				<a href="#photos" data-icon="grid" data-iconpos="notext">Photos</a>
+			</header>
+			<img src="img/led_tv.jpg" class="fullscreen" alt="LED TV" />
+		</div><!-- Page LED TV -->
+
+		<div data-role="page" id="dj-competition">
+			<header data-role="header">
+				<h1>DJ competition</h1>
+				<a href="#photos" data-icon="grid" data-iconpos="notext">Photos</a>
+			</header>
+			<img src="img/dj_panel.jpg" class="fullscreen" alt="DJ Panel" />
+		</div><!-- Page DJ competition -->
+
+		<div data-role="page" id="smart-phone">
+			<header data-role="header">
+				<h1>Smartphones are improving</h1>
+				<a href="#photos" data-icon="grid" data-iconpos="notext">Photos</a>
+			</header>
+			<img src="img/smart_phone.jpg" class="fullscreen" alt="Smart Phone" />
+		</div><!-- Page Smartphones -->
+
+		<footer data-role="footer" data-position="fixed">
+			<nav data-role="navbar">
+				<ul>
+					<li>
+						<a href="#" data-icon="home">Home</a>
+					</li>
+					<li>
+						<a href="#" data-icon="grid">Photos</a>
+					</li>
+					<li>
+						<a href="#" data-icon="info">Info</a>
+					</li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+</html

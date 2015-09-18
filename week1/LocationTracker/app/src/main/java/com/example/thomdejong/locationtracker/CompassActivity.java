@@ -71,6 +71,8 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         targetLocation = coordinateData.Location;
         startLocationListener();
 
+        ((TextView) findViewById(R.id.LocationTextView)).setText(coordinateName);
+
         startVisualTimer();
         initalizeVisualUICodeBlock();
         updateCompassVisual();

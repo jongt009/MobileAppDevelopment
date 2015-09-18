@@ -5,9 +5,11 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Debug;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +39,7 @@ public class AddLocationActivity extends AppCompatActivity {
 
         int res = checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION");
         if (res != PackageManager.PERMISSION_GRANTED) {
+            Log.i("permission", "not granted");
             return;
         }
 
@@ -45,20 +48,22 @@ public class AddLocationActivity extends AppCompatActivity {
         for(String providerName: locationManager.getProviders(true)){
             Location location = locationManager.getLastKnownLocation(providerName);
             if(location == null) continue;
-            if(bestLocation.getAccuracy() < location.getAccuracy()){
+            if(bestLocation.hasAccuracy() && bestLocation.getAccuracy() < location.getAccuracy()){
                 bestLocation = location;
             }
         }
         location = bestLocation;
+        ((TextView) findViewById(R.id.latitude_tekstview)).setText(String.format("%1$,.2f", null, location.getLatitude()));
+        ((TextView) findViewById(R.id.longtitude_textview)).setText(String.format("%1$,.2f", null, location.getLongitude()));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(CoordinatesListActivity.addLocationData(editText.getText().toString(), location)){
-                    Toast.makeText(getApplicationContext(), "Location '"+ editText.getText().toString() + "' added", Toast.LENGTH_LONG).show();
+                if (CoordinatesListActivity.addLocationData(editText.getText().toString(), location, true)) {
+                    Toast.makeText(getApplicationContext(), "Location '" + editText.getText().toString() + "' added", Toast.LENGTH_LONG).show();
                     finish();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Location '"+ editText.getText().toString() + "' already exists", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Location '" + editText.getText().toString() + "' already exists", Toast.LENGTH_LONG).show();
                 }
             }
         });

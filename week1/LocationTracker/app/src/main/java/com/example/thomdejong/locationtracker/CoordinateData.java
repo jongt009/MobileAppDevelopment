@@ -8,4 +8,8 @@ import android.location.Location;
 public class CoordinateData {
     public String Name;
     public Location Location;
+
+    public CoordinateData(){
+        Location = new Location("");
+    }
 }
