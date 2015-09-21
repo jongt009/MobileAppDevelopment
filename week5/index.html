@@ -19,10 +19,10 @@
 
 	</head>
 	<body>
-		<header data-role="header">
-			<h1>My photo's</h1>
-		</header>
 		<div data-role="page" id="photos">
+			<header data-role="header">
+				<h1>My photo's</h1>
+			</header>
 			<article data-role="content">
 				<ul data-role="listview" data-filter="true">
 					<li>
@@ -33,7 +33,7 @@
 						</p> </a>
 					</li>
 					<li>
-						<a href="#dj-competion"> <h1>DJ competition</h1> <img src="img/dj_panel_tn.jpg" alt="DJ Panel" />
+						<a href="#dj-competition"> <h1>DJ competition</h1> <img src="img/dj_panel_tn.jpg" alt="DJ Panel" />
 						<p>
 							DJs around the world are asking for a place on the
 							'Bottom 100 DJs list'
@@ -48,6 +48,22 @@
 					</li>
 				</ul>
 			</article>
+
+			<footer data-role="footer" data-position="fixed">
+				<nav data-role="navbar">
+					<ul>
+						<li>
+							<a href="#" data-icon="home">Home</a>
+						</li>
+						<li>
+							<a href="#" data-icon="grid">Photos</a>
+						</li>
+						<li>
+							<a href="#" data-icon="info">Info</a>
+						</li>
+					</ul>
+				</nav>
+			</footer>
 		</div><!-- Page photos -->
 
 		<div data-role="page" id="led-tv">
@@ -74,20 +90,5 @@
 			<img src="img/smart_phone.jpg" class="fullscreen" alt="Smart Phone" />
 		</div><!-- Page Smartphones -->
 
-		<footer data-role="footer" data-position="fixed">
-			<nav data-role="navbar">
-				<ul>
-					<li>
-						<a href="#" data-icon="home">Home</a>
-					</li>
-					<li>
-						<a href="#" data-icon="grid">Photos</a>
-					</li>
-					<li>
-						<a href="#" data-icon="info">Info</a>
-					</li>
-				</ul>
-			</nav>
-		</footer>
 	</body>
 </html
