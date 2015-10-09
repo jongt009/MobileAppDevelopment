@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Restaurant Picker</title>
+
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="styles/custom.css">
+	</head>
+	<body>
+		<div data-role="page" id="town_overview">
+			<header data-role="header" data-add-back-btn="true">
+				<h1>Restaurant Picker</h1>
+			</header>
+			<article data-role="content">
+				<div class="choice_list">
+					<h1>In which town do you want to eat?</h1>
+					<ul data-role="listview" data-inset="true" data-filter="true">
+						<li><a href="restaurant-overview.html" data-transition="slidedown"> Amiens<span class="ui-li-count">3</span> </a></li>
+						<li><a href="restaurant-overview.html" data-transition="slidedown"> Bastia<span class="ui-li-count">2</span> </a></li>
+						<li><a href="restaurant-overview.html" data-transition="slidedown"> Belfort<span class="ui-li-count">5</span> </a></li>
+						<li><a href="restaurant-overview.html" data-transition="slidedown"> Bordeaux<span class="ui-li-count">1</span> </a></li>
+					</ul>
+				</div>
+			</article>
+		</div><!-- page -->
+
+	</body>
+</html>

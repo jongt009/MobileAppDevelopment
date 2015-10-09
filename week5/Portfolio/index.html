@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Portfolio</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"	/>
+		<script	src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script	src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+		<script>
+			$(document).ready(function() {
+
+				console.log('ready');
+
+				var hideText = function(button) {
+					$(button).text('More info');
+					$('#par').hide();
+				};
+
+				var showText = function(button) {
+					$(button).text('Less info');
+					$('#par').show();
+				};
+
+				$('#hide').on('click', function() {
+					console.log('clicked');
+					if ($('#par').is(':visible')) {
+						hideText(this);
+					} else {
+						showText(this);
+					}
+				});
+
+				hideText($('#hide'));
+
+			});
+		</script>
+	</head>
+	<body>
+		<div data-role="page" id="mainpage">
+			<header data-role="header">
+				<h1>My Portfolio</h1>
+
+				<nav data-role="navbar">
+					<ul>
+						<li><a href="index.html" data-icon="home">Projects</a></li>
+						<li><a href="about.html" data-icon="info">about</a></li>
+						<li><a href="contact.html" data-icon="action">contact</a></li>
+					</ul>
+				</nav>
+			</header>
+			<article  data-role="content">
+				<ul data-role="listview" data-inset="true" data-theme="portfolio">
+					<li data-role="collapsible" data-iconpos="right" data-shadow="false" data-corners="true"><h2>Digital Learning</h2><!-- title of the subject -->
+						<ul data-role="listview" data-shadow="true" data-inset="true" data-corners="true">
+							<li><p style="white-space: normal !important;"><!-- normal text goes here --> Digital learning is about creating a web application for children to use                                    during their stay at school, with this project students will come in contact                                    with html, css and java. they have 16 weeks to complete this course. at the end there will be a teacher to grade the students on their work.</p>
+								<button id="hide">
+									Show less info
+								</button>
+								<div id="par">
+									<p style="white-space: normal !important;"> In the time that I was on this project I was the team leader and made sure that everyone knew what he/she was doing and that the deadline was reached. <!-- text that should be hidden or could be goes here -->
+								</div></li>
+							<!-- add step 6 between the …… -->
+						</ul></li><li data-role="collapsible" data-iconpos="right" data-shadow="false" data-corners="true"><h2>Wosi</h2><!-- title of the subject -->
+						<ul data-role="listview" data-shadow="true" data-inset="true" data-corners="true">
+							<li>......</li>
+						</ul></li>
+					<li data-role="collapsible" data-iconpos="right" data-shadow="false" data-corners="true"><h2>Expo</h2><!-- title of the subject -->
+						<ul data-role="listview" data-shadow="true" data-inset="true" data-corners="true">
+							<li>......</li>
+						</ul></li>
+					<li data-role="collapsible" data-iconpos="right" data-shadow="false" data-corners="true"><h2>Outfit</h2><!-- title of the subject -->
+						<ul data-role="listview" data-shadow="true" data-inset="true" data-corners="true">
+							<li>......</li>
+						</ul></li>
+
+				</ul>
+			</article>
+
+			<footer data-role="footer" data-position="fixed">
+				<h4 class="ui-title" role="heading" aria-level="1"> © </h4>
+			</footer>
+
+		</div>
+	</body>
+</html>
