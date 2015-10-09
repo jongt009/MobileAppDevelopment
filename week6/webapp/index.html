@@ -8,20 +8,59 @@
 		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 		<script src="app.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="style.css">
+
 	</head>
 	<body>
 
 		<div data-role="page" id="home">
-			<div data-role="header">
-				<h1>Todo</h1>
-			</div>
 			<div data-role="content">
 
-				<input type="text" id="input" placeholder="Add objects.." onchange="add();">
+				<div data-role="header">
+					<h1>Storing stuff</h1>
+				</div>
+
+				<table width="100%">
+					<tr>
+						<td width="100%">
+						<input type="text" id="input" placeholder="Add objects.."/>
+						</td><td>
+							<img src="addIcon.png" width="32px" height="32px" id ="inputButton"/>
+						</td>
+						<td>
+							<a href="#deleteView"><img src="trashcan-512.png" width="32px" height="32px"/></a>
+						</td>
+					</tr>
+				</table>
 
 				<ul id="objects" data‐role="listview" data‐inset="true">
 					
-				</ul> <br>
+				</ul>
+				<br>
+			</div>
+		</div>
+
+		<div data-role="page" id="deleteView">
+						<div data-role="content">
+
+				<div data-role="header">
+					<h1>Storing stuff</h1>
+				</div>
+
+				<table width="100%">
+					<tr>
+						<td width="100%"> </td>
+						<td>
+							<a href="#home"><img src="addIcon.png" width="32px" height="32px"/></a>
+						</td>
+					</tr>
+				</table>
+
+				<ul id="deleteobjects" data‐role="listview" data‐inset="true">
+					
+				</ul>
+				<br>
 			</div>
 		</div>
 
