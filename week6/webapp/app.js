@@ -1,0 +1,102 @@
+var objects;
+
+$(document).ready(function(){
+	
+	objects = loadObjects();
+	
+	showObjects();
+});
+
+function loadObjects(){
+	if(	json = localStorage.getItem("objects")){
+		// Retrieve data from JSON
+		returnValue = JSON.parse(json);
+	}else{
+		// No data stored
+		returnValue = new Array();
+	}
+	
+	return returnvalue;
+}
+
+function saveObjects(){
+	localStorage.setItem("objects", JSON.stringify(objects));
+
+}
+
+function showObjects(){
+	if(!shownObjects){
+		shownObjects = new Array();
+	}
+	listView = $('#objects');
+	
+	// Foreach loop
+	$.each(objects, function(index, item){
+		if(!listView.find("li[name="+item+""]")){
+			listItem = '<li>'+item.value+'</li>';
+			$('#items').append(element);
+		}
+	});
+}
+
+function addObject(){
+	value = $('#input').val();
+	if(value){
+		objects.push({value : value});
+	}
+}
+
+function removeObject(){
+	
+}
+
+function add(){
+	// Retrieve the entered form data
+	var title = $('[name="item"]').val();
+	// Fetch the existing objects
+	var objects = getObjects();
+	// Push the new item into the existing list
+	objects.push({
+		title: title
+	});
+	// Store the new list
+	saveObjects(objects);
+	// Reload the page to show the new objects
+	window.location.reload();
+}
+
+function getObjects(){
+	// See if objects is inside localStorage
+	if (localStorage.getItem("objects")){
+		// If yes, then load the objects
+		objects = JSON.parse(localStorage.getItem("objects"));
+	}else{
+		// Make a new array of objects
+		objects = new Array();
+
+	}
+	return objects;
+}
+
+function saveObjects(objects){
+	// Save the list into localStorage
+	localStorage.setItem("objects", JSON.stringify(objects));
+}
+
+function homepage(){
+	// Fetch the existing objects
+	objects = getObjects();
+
+	// Clear the list
+	$('#items').find('li').remove();
+
+	// Add every object to the objects list
+	$.each(objects, function(index, item){
+		element = '<li>'+item.title+'</li>';
+		
+		$('#items').append(element);
+	});
+  
+   $('#items').listview();
+   $('#items').listview("refresh");
+}

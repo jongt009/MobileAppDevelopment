@@ -70,7 +70,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 result.add(data);
             }while (c.moveToNext());
         }
-
         return result;
     }
 
