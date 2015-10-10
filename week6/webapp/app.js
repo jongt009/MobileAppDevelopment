@@ -52,7 +52,7 @@ function showObjects() {
 
 function showDeleteObjects() {
 	listView = $('#deleteobjects');
-
+	console.log("showing"+listView.html());
 	// Foreach loop
 	for ( i = 0; i < objects.length; i++) {
 		if (!objects[i]) {
@@ -60,18 +60,10 @@ function showDeleteObjects() {
 		}
 		value = objects[i].value;
 
-		if (!listView.find("li[delname='" + value + "']").get(0)) {
-			console.log(value);
-			
+		if (!listView.find("li[delname='" + value + "']").get(0)) {			
 			listItem = "<li class='deletable' delname='"+value+"'>" + value + '</li>';
 			listView.append(listItem);
-
-			$(document).on('click', "li[delname='" + value + "']", function() {
-				value = $(this).attr('delname');
-				removeObject(value);
-				
-				//$(document).off('click', "li[delname='" + value + "']");
-			});
+			console.log(listItem);
 		}
 	}
 	listView.listview();
@@ -81,7 +73,6 @@ function showDeleteObjects() {
 function addObject() {
 	val = $('#input').val();
 	if (val) {
-		console.log("added");
 		objects.push({
 			value : val
 		});
@@ -92,7 +83,10 @@ function addObject() {
 }
 
 function removeObject(objectValue) {
-	console.log("remove");
+
+	clearObjectLists();
+	console.log(listView.find('li').length);
+
 	result = [];
 	currentIndex = 0;
 	for ( i = 0; i < objects.length; i++) {
@@ -107,21 +101,22 @@ function removeObject(objectValue) {
 			currentIndex++;
 		}
 	}
-	clearObjectLists();
 	
 	objects = result;
-
 	showDeleteObjects();
 	showObjects();
 }
 
 function clearObjectLists() {
-	listview = 	$('#objects').html('');
+	console.log("clean");
+	listview = 	$('#objects');
 	listView.find('li').remove();
+	listview.html('');
 	listView.listview("refresh");
 	
 	listview = $('#deleteobjects');
 	listView.find('li').remove();
+	listview.html('');
 	listView.listview("refresh");
 }
 
@@ -131,9 +126,15 @@ function addEvents() {
 	});
 
 	$('#input').on('keyup', function(e) {
-		console.log("keypress" + e.keyCode);
 		if (e.keyCode === 13) {
 			addObject();
+		}
+	});
+	
+	$(document).on('click', "li", function() {
+		value = $(this).attr('delname');
+		if(value){
+			removeObject(value);
 		}
 	});
 
